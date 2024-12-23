@@ -1,14 +1,16 @@
 import { useState } from 'react';
+import useTodoStore from '../stores/todoStore';
 
-export default function AddTodo({ onAdd }) {
+export default function AddTodo() {
   const [text, setText] = useState('');
+  const addTodo = useTodoStore((state) => state.addTodo);
 
   const handleChange = (e) => setText(e.target.value);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (text.trim() !== '') {
-      onAdd({ text: text, status: 'active' }); // 서버에 필요한 데이터만 전송
+      addTodo(text);
       setText('');
     }
   };
