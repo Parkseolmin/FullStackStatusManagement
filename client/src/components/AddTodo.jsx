@@ -5,12 +5,10 @@ export default function AddTodo() {
   const [text, setText] = useState('');
   const addTodo = useTodoStore((state) => state.addTodo);
 
-  const handleChange = (e) => setText(e.target.value);
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (text.trim() !== '') {
-      addTodo(text);
+    if (text.trim()) {
+      addTodo(text); // Zustand의 addTodo 호출
       setText('');
     }
   };
@@ -19,11 +17,11 @@ export default function AddTodo() {
     <form onSubmit={handleSubmit}>
       <input
         type='text'
+        placeholder='할 일을 입력하세요'
         value={text}
-        placeholder='할 일 적으셈'
-        onChange={handleChange}
+        onChange={(e) => setText(e.target.value)}
       />
-      <button>추가</button>
+      <button type='submit'>추가</button>
     </form>
   );
 }

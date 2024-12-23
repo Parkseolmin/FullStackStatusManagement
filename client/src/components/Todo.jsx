@@ -5,13 +5,13 @@ export default function Todo({ todo }) {
   const updateTodo = useTodoStore((state) => state.updateTodo);
   const deleteTodo = useTodoStore((state) => state.deleteTodo);
 
-  const handleChange = (e) => {
-    const newStats = e.target.checked ? 'completed' : 'active';
-    updateTodo(id, newStats);
+  const handleStatusChange = () => {
+    const newStatus = status === 'active' ? 'completed' : 'active';
+    updateTodo(id, newStatus); // 상태 업데이트
   };
 
   const handleDelete = () => {
-    deleteTodo(id);
+    deleteTodo(id); // Todo 삭제
   };
 
   return (
@@ -20,7 +20,7 @@ export default function Todo({ todo }) {
         type='checkbox'
         id={id}
         checked={status === 'completed'}
-        onChange={handleChange}
+        onChange={handleStatusChange}
       />
       <label htmlFor={id}>{text}</label>
       <button onClick={handleDelete}>삭제</button>

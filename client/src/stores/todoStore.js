@@ -1,16 +1,18 @@
-import api from '../api/api';
 import { create } from 'zustand';
+import api from '../api/api';
 
 const useTodoStore = create((set) => ({
   todos: [], // 초기 상태
+
   fetchTodos: async () => {
     try {
       const response = await api.get('/todos');
-      set({ todos: response.data });
+      set({ todos: response.data }); // 상태 업데이트
     } catch (err) {
       console.error('Failed to fetch todos:', err);
     }
   },
+
   addTodo: async (text) => {
     try {
       const response = await api.post('/todos', { text, status: 'active' });
@@ -19,6 +21,7 @@ const useTodoStore = create((set) => ({
       console.error('Failed to add todo:', err);
     }
   },
+
   updateTodo: async (id, status) => {
     try {
       const response = await api.put(`/todos/${id}`, { status });
@@ -31,6 +34,7 @@ const useTodoStore = create((set) => ({
       console.error('Failed to update todo:', err);
     }
   },
+
   deleteTodo: async (id) => {
     try {
       await api.delete(`/todos/${id}`);
