@@ -1,3 +1,4 @@
+import React from 'react';
 import useTodoStore from '../stores/todoStore';
 
 export default function Todo({ todo }) {

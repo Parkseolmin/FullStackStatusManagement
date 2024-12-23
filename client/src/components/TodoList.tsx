@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import useTodoStore from '../stores/todoStore';
 import Todo from './Todo';
 import AddTodo from './AddTodo';
+import React from 'react';
 
 export default function TodoList({ filter }) {
   const todos = useTodoStore((state) => state.todos); // 상태만 구독
