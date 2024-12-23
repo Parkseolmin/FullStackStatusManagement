@@ -1,0 +1,8 @@
+# 의존성 디렉토리 무시
+node_modules/* -text
+
+# 모든 텍스트 파일 LF로 고정
+*.js text eol=lf
+*.jsx text eol=lf
+*.json text eol=lf
+*.css text eol=lf
