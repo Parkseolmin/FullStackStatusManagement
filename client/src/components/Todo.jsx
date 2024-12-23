@@ -1,13 +1,17 @@
-export default function Todo({ todo, onUpdate, onDelete }) {
+import useTodoStore from '../stores/todoStore';
+
+export default function Todo({ todo }) {
   const { id, text, status } = todo;
+  const updateTodo = useTodoStore((state) => state.updateTodo);
+  const deleteTodo = useTodoStore((state) => state.deleteTodo);
 
   const handleChange = (e) => {
     const newStats = e.target.checked ? 'completed' : 'active';
-    onUpdate({ ...todo, status: newStats });
+    updateTodo(id, newStats);
   };
 
   const handleDelete = () => {
-    onDelete(todo);
+    deleteTodo(id);
   };
 
   return (

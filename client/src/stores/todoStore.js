@@ -1,5 +1,5 @@
-import create from 'zustand';
 import api from '../api/api';
+import { create } from 'zustand';
 
 const useTodoStore = create((set) => ({
   todos: [], // 초기 상태
