@@ -1,14 +1,9 @@
-import { useState } from 'react';
-import Header from './components/Header';
-import TodoList from './components/TodoList';
+import { Outlet } from 'react-router-dom';
 
 export default function App() {
-  const filters = ['all', 'active', 'completed'];
-  const [filter, setFilter] = useState(filters[0]);
   return (
-    <section>
-      <Header filters={filters} filter={filter} onFilterChange={setFilter} />
-      <TodoList filter={filter} />
-    </section>
+    <>
+      <Outlet />
+    </>
   );
 }

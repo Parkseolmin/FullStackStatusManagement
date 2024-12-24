@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
+require('dotenv').config(); // 환경 변수 로드
 
+const MONGO_URI = process.env.MONGO_DEPLOYMENT_URI;
+console.log('MONGO_URI:::', MONGO_URI);
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect('mongodb://localhost:27017/todos', {
+    const conn = await mongoose.connect(MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
