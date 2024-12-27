@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 
-const TodoSchema = new mongoose.Schema({
+// mongoose.Schema를 Schema 변수로 정의
+const { Schema } = mongoose;
+
+const TodoSchema = new Schema({
   text: {
     type: String,
     required: true,
@@ -9,6 +12,11 @@ const TodoSchema = new mongoose.Schema({
     type: String,
     enum: ['active', 'completed'],
     default: 'active',
+  },
+  author: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: 'User', // 'User' 모델 참조
   },
 });
 

@@ -5,6 +5,8 @@ import './index.css';
 import App from './App.jsx';
 import TodoPage from './pages/TodoPage.jsx';
 import Login from './pages/LoginPage/Login';
+import RegisterPage from './pages/RegisterPage/RegisterPage.jsx';
+import PrivateRoute from './route/PrivateRoute.jsx';
 
 const router = createBrowserRouter([
   {
@@ -12,7 +14,16 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       { index: true, element: <Login /> },
-      { path: '/todos', element: <TodoPage /> },
+      { path: '/register', element: <RegisterPage /> },
+
+      {
+        path: '/todos',
+        element: (
+          <PrivateRoute>
+            <TodoPage />
+          </PrivateRoute>
+        ),
+      },
     ],
   },
 ]);

@@ -42,25 +42,25 @@ userController.loginWithEmail = asyncHandler(async (req, res) => {
   // 유저 찾기
   const user = await User.findOne({ email });
   if (!user) {
-    return res.status(404).json({ message: 'User not found' });
+    return res.status(404).json({ message: '등록되지 않은 정보입니다.' });
   }
 
   // 비밀번호 검증
   const isPasswordMatch = await bcrypt.compare(password, user.password);
   if (!isPasswordMatch) {
-    return res.status(401).json({ message: 'Invalid email or password' });
+    return res
+      .status(401)
+      .json({ message: '이메일과 비밀번호를 다시 확인해주세요.' });
   }
   // 토큰 생성
   const accessToken = jwt.sign(
     { userId: user._id, email: user.email },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: '1d' },
   );
 
   const refreshToken = jwt.sign(
     { userId: user._id, email: user.email },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: '7d' },
   );
 
   res.status(200).json({
@@ -68,6 +68,17 @@ userController.loginWithEmail = asyncHandler(async (req, res) => {
     user: { id: user.id, name: user.name, email: user.email },
     tokens: { accessToken, refreshToken },
   });
+});
+
+userController.getUser = asyncHandler(async (req, res) => {
+  const { userId } = req.user; // authMiddleware에서 전달된 decoded 정보
+  const user = await User.findById(userId).select('-password'); // DB에서 유저 데이터 조회
+
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' });
+  }
+
+  res.status(200).json({ status: 'success', user }); // 유저 정보 반환
 });
 
 module.exports = userController;
