@@ -23,11 +23,3 @@ app.use(errorHandler);
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
-
-// TODO
-// 1. User model, controller, route
-// 2. Authentication middleware
-// 3. JWT (JSON Web Tokens) for authentication
-// 4. Validation middleware for input data
-// 5. Error handling middleware
-// 6. Logging middleware

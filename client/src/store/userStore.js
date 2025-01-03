@@ -1,25 +1,27 @@
-// src/store/userStore.js
 import { create } from 'zustand';
+import api from '../api/api';
 
 const useUserStore = create((set) => ({
-  user: null,
-  setUser: (userData) => {
-    // 사용자 정보 저장
+  user: null, // 초기 사용자 상태
+  setUser: (userData, token) => {
     set({ user: userData });
-    if (userData) {
-      localStorage.setItem(`user-${userData.id}`, JSON.stringify(userData));
-      localStorage.setItem('active-user', userData.id);
+    if (token) {
+      localStorage.setItem('accessToken', token);
     }
   },
   clearUser: () => {
-    // 활성 사용자 정보 삭제
-    const activeUser = localStorage.getItem('active-user');
-    if (activeUser) {
-      localStorage.removeItem(`user-${activeUser}`);
-      localStorage.removeItem('active-user');
-      localStorage.removeItem('accessToken');
-    }
+    localStorage.removeItem('accessToken');
     set({ user: null });
+  },
+  restoreUser: async () => {
+    try {
+      const response = await api.get('/user/me'); // Authorization 헤더 자동 추가
+      set({ user: response.data.user });
+    } catch (err) {
+      console.error('Failed to restore user:', err.message);
+      localStorage.removeItem('accessToken');
+      set({ user: null });
+    }
   },
 }));
 

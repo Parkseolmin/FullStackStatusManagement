@@ -2,12 +2,10 @@
 import { useNavigate } from 'react-router-dom';
 import styles from './RegisterPage.module.css';
 import { useRegisterForm } from '../../hooks/useRegisterForm';
-import useUserStore from '../../store/userStore';
 import api from '../../api/api'; // 공용 API 설정 가져오기
 
 export default function RegisterPage() {
   const { register, handleSubmit, errors } = useRegisterForm();
-  const setUser = useUserStore((state) => state.setUser);
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
@@ -15,8 +13,6 @@ export default function RegisterPage() {
       const response = await api.post('/user', data); // Axios를 통한 POST 요청
 
       if (response.status === 201) {
-        const result = response.data;
-        setUser({ id: result.id, name: result.name, email: result.email });
         alert('회원가입이 성공적으로 완료되었습니다!');
         navigate('/'); // 로그인 페이지로 이동
       } else {

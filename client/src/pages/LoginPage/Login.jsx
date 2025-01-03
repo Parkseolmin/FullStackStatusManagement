@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './Login.module.css';
 import useUserStore from '../../store/userStore';
@@ -11,36 +11,27 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const user = useUserStore((state) => state.user);
-  const setUser = useUserStore((state) => state.setUser);
 
   // 로그인 상태 확인
   useEffect(() => {
-    const activeUser = localStorage.getItem('active-user');
-    if (user || activeUser) {
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken || user) {
       navigate(location.state?.from || '/todos'); // 이전 페이지 또는 기본 경로로 이동
     }
-  }, [user, navigate, location.state]);
+  }, [navigate, location.state, user]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     if (!email || !password) {
       setError('모든 필드를 입력해주세요.');
       return;
     }
-
     try {
       const response = await api.post('/user/login', { email, password });
-
       if (response.status === 200) {
         const { user: userData, tokens } = response.data;
-
-        // Zustand와 로컬스토리지에 사용자 정보 저장
-        setUser(userData);
-        localStorage.setItem('accessToken', tokens.accessToken);
-
-        alert('로그인에 성공했습니다!');
-        navigate('/todos');
+        useUserStore.getState().setUser(userData, tokens.accessToken);
+        navigate('/todos'); // 리디렉션
       } else {
         setError(response.data.message || '로그인 실패.');
       }

@@ -12,7 +12,6 @@ export default function TodoList({ filter }) {
       try {
         const response = await api.get('/todos');
         setTodos(response.data);
-        console.log('response.data::::', response.data);
       } catch (err) {
         console.error('Failed to fetch todos:', err);
       }
