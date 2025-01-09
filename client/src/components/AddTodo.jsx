@@ -1,15 +1,25 @@
 import { useState } from 'react';
+import api from '../api/api';
 
-export default function AddTodo({ onAdd }) {
+export default function AddTodo({ category, onAdd }) {
   const [text, setText] = useState('');
 
   const handleChange = (e) => setText(e.target.value);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (text.trim() !== '') {
-      onAdd({ text: text, status: 'active' }); // 서버에 필요한 데이터만 전송
-      setText('');
+      try {
+        const response = await api.post('/todos', {
+          text,
+          category,
+          status: 'active',
+        });
+        setText('');
+        onAdd(response.data); // 새로운 투두를 부모로 전달
+      } catch (err) {
+        console.error('Failed to add todo:', err);
+      }
     }
   };
 
@@ -18,10 +28,10 @@ export default function AddTodo({ onAdd }) {
       <input
         type='text'
         value={text}
-        placeholder='할 일 적으셈'
+        placeholder={`"${category}"에 할 일을 추가하세요`}
         onChange={handleChange}
       />
-      <button>추가</button>
+      <button type='submit'>추가</button>
     </form>
   );
 }

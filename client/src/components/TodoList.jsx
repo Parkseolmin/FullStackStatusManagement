@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
-import AddTodo from './AddTodo';
 import Todo from './Todo';
 import api from '../api/api';
+import AddTodo from './AddTodo';
 
-export default function TodoList({ filter }) {
+export default function TodoList({ category, filter }) {
   const [todos, setTodos] = useState([]);
-  const [editingId, setEditingId] = useState(null); // 수정 중인 투두 ID 추적
+  const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
     const fetchTodos = async () => {
       try {
-        const response = await api.get('/todos');
+        const response = await api.get(`/todos?category=${category}`);
         setTodos(response.data);
       } catch (err) {
         console.error('Failed to fetch todos:', err);
@@ -18,15 +18,10 @@ export default function TodoList({ filter }) {
     };
 
     fetchTodos();
-  }, []);
+  }, [category]);
 
-  const handleAdd = async (todo) => {
-    try {
-      const response = await api.post('/todos', todo);
-      setTodos((prev) => [...prev, response.data]);
-    } catch (err) {
-      console.error('Failed to add todo:', err);
-    }
+  const handleAdd = (newTodo) => {
+    setTodos((prev) => [...prev, newTodo]); // 새로운 투두 추가
   };
 
   const handleUpdate = async (updated) => {
@@ -40,7 +35,7 @@ export default function TodoList({ filter }) {
           todo.id === response.data.id ? response.data : todo,
         ),
       );
-      setEditingId(null); // 수정 완료 후 수정 모드 종료
+      setEditingId(null);
     } catch (err) {
       console.error('Failed to update todo:', err);
     }
@@ -60,23 +55,23 @@ export default function TodoList({ filter }) {
     return todos.filter((todo) => todo.status === filter);
   };
 
-  const filteredTodo = getFilteredTodos(todos, filter);
+  const filteredTodos = getFilteredTodos(todos, filter);
 
   return (
     <section>
       <ul>
-        {filteredTodo.map((todo) => (
+        {filteredTodos.map((todo) => (
           <Todo
             key={todo.id}
             todo={todo}
             onUpdate={handleUpdate}
             onDelete={handleDelete}
-            isEditing={editingId === todo.id} // 현재 수정 중인지 확인
-            setEditing={setEditingId} // 수정 상태 관리 함수 전달
+            isEditing={editingId === todo.id}
+            setEditing={setEditingId}
           />
         ))}
       </ul>
-      <AddTodo onAdd={handleAdd} />
+      <AddTodo category={category} onAdd={handleAdd} />
     </section>
   );
 }

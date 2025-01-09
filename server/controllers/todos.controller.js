@@ -5,15 +5,16 @@ const todoController = {};
 
 // 모든 할 일 가져오기
 todoController.getTodos = asyncHandler(async (req, res) => {
-  const todos = await todoService.getTodos();
+  const { category } = req.query || 'today';
+  const todos = await todoService.getTodos(category);
   res.status(200).json(todos);
 });
 
 // 새로운 할 일 생성
 todoController.createTodo = asyncHandler(async (req, res) => {
-  const { text } = req.body;
+  const { text, category = 'today' } = req.body;
   const { userId } = req.user; // 인증 미들웨어에서 전달된 userId
-  const newTodo = await todoService.createTodo(text, userId);
+  const newTodo = await todoService.createTodo(text, category, userId);
   res.status(201).json(newTodo);
 });
 

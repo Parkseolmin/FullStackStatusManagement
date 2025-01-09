@@ -1,19 +1,20 @@
 const Todo = require('../models/Todo');
 
 // 모든 할 일 가져오기
-const getTodos = async () => {
-  return await Todo.find().populate('author', 'name email');
+const getTodos = async (category) => {
+  const query = category ? { category } : {}; // category 조건 추가
+  return await Todo.find(query).populate('author', 'name email');
 };
 
 // 새로운 할 일 생성
-const createTodo = async (text, userId) => {
+const createTodo = async (text, category, userId) => {
   if (!text || !userId) {
     const error = new Error('Invalid data for creating todo');
     error.status = 400;
     throw error;
   }
 
-  const newTodo = await Todo.create({ text, author: userId });
+  const newTodo = await Todo.create({ text, category, author: userId });
   return await newTodo.populate('author', 'name email');
 };
 
