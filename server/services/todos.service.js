@@ -17,27 +17,44 @@ const createTodo = async (text, userId) => {
   return await newTodo.populate('author', 'name email');
 };
 
-// 할 일 업데이트
-const updateTodo = async (id, status) => {
-  if (!['active', 'completed'].includes(status)) {
-    const error = new Error('Invalid status value');
+const updateTodo = async (id, data) => {
+  const { text, status } = data;
+
+  // 유효성 검증
+  if (!text || typeof text !== 'string' || text.trim() === '') {
+    const error = new Error('Invalid or empty text');
     error.status = 400;
     throw error;
   }
 
-  const updatedTodo = await Todo.findByIdAndUpdate(
-    id,
-    { status },
-    { new: true },
-  ).populate('author', 'name email');
+  if (!['active', 'completed'].includes(status)) {
+    const error = new Error('Status must be "active" or "completed"');
+    error.status = 400;
+    throw error;
+  }
 
-  if (!updatedTodo) {
+  // Todo 존재 확인
+  const existingTodo = await Todo.findById(id);
+  if (!existingTodo) {
     const error = new Error('Todo not found');
     error.status = 404;
     throw error;
   }
 
-  return updatedTodo;
+  // 수정 로직
+  const updatedTodo = await Todo.findByIdAndUpdate(
+    id,
+    { text, status },
+    { new: true },
+  ).populate('author', 'name email'); // 작성자 정보 포함
+
+  if (!updatedTodo) {
+    const error = new Error('Failed to update todo');
+    error.status = 500;
+    throw error;
+  }
+
+  return updatedTodo; // 수정된 투두 반환
 };
 
 // 할 일 삭제

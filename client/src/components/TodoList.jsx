@@ -5,9 +5,9 @@ import api from '../api/api';
 
 export default function TodoList({ filter }) {
   const [todos, setTodos] = useState([]);
+  const [editingId, setEditingId] = useState(null); // 수정 중인 투두 ID 추적
 
   useEffect(() => {
-    // 서버에서 데이터 가져오기
     const fetchTodos = async () => {
       try {
         const response = await api.get('/todos');
@@ -32,6 +32,7 @@ export default function TodoList({ filter }) {
   const handleUpdate = async (updated) => {
     try {
       const response = await api.put(`/todos/${updated.id}`, {
+        text: updated.text,
         status: updated.status,
       });
       setTodos((prev) =>
@@ -39,6 +40,7 @@ export default function TodoList({ filter }) {
           todo.id === response.data.id ? response.data : todo,
         ),
       );
+      setEditingId(null); // 수정 완료 후 수정 모드 종료
     } catch (err) {
       console.error('Failed to update todo:', err);
     }
@@ -69,6 +71,8 @@ export default function TodoList({ filter }) {
             todo={todo}
             onUpdate={handleUpdate}
             onDelete={handleDelete}
+            isEditing={editingId === todo.id} // 현재 수정 중인지 확인
+            setEditing={setEditingId} // 수정 상태 관리 함수 전달
           />
         ))}
       </ul>

@@ -19,10 +19,10 @@ todoController.createTodo = asyncHandler(async (req, res) => {
 
 // 할 일 업데이트
 todoController.updateTodo = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  const { status } = req.body;
-  const updatedTodo = await todoService.updateTodo(id, status);
-  res.status(200).json(updatedTodo);
+  const { id } = req.params; // 수정할 투두 ID
+  const { text, status } = req.body; // 클라이언트에서 전달된 데이터
+  const updatedTodo = await todoService.updateTodo(id, { text, status }); // 서비스 호출
+  res.status(200).json(updatedTodo); // 수정된 투두 반환
 });
 
 // 할 일 삭제

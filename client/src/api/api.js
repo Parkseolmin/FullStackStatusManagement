@@ -7,13 +7,13 @@ const api = axios.create({
   },
 });
 
-// Axios 요청 인터셉터
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
+    console.log('요청 보냄:', config);
     return config;
   },
   (error) => {
@@ -21,19 +21,13 @@ api.interceptors.request.use(
   },
 );
 
-// Axios 응답 인터셉터
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log('응답 받음:', response);
+    return response;
+  },
   (error) => {
-    // 401 에러 처리: 인증 실패
-    if (error.response && error.response.status === 401) {
-      const isLogout = window.location.pathname === '/'; // 현재 경로가 로그인 페이지인지 확인
-      if (!isLogout) {
-        alert('세션이 만료되었습니다. 다시 로그인해주세요.');
-        localStorage.removeItem('accessToken');
-        window.location.href = '/'; // 로그인 페이지로 이동
-      }
-    }
+    console.error('요청 에러:', error);
     return Promise.reject(error);
   },
 );

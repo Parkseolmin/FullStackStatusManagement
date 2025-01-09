@@ -1,35 +1,14 @@
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { Provider } from 'react-redux';
+import AppRouter from './routes/AppRouter';
 import './index.css';
-import App from './App.jsx';
-import TodoPage from './pages/TodoPage.jsx';
-import Login from './pages/LoginPage/Login';
-import RegisterPage from './pages/RegisterPage/RegisterPage.jsx';
-import PrivateRoute from './route/PrivateRoute.jsx';
-
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <App />,
-    children: [
-      { index: true, element: <Login /> },
-      { path: '/register', element: <RegisterPage /> },
-
-      {
-        path: '/todos',
-        element: (
-          <PrivateRoute>
-            <TodoPage />
-          </PrivateRoute>
-        ),
-      },
-    ],
-  },
-]);
+import store from './store/store';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router}></RouterProvider>
+    <Provider store={store}>
+      <AppRouter />
+    </Provider>
   </StrictMode>,
 );

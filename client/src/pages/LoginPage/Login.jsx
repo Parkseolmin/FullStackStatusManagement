@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser } from '../../store/userSlice'; // Redux 액션 가져오기
+import api from '../../api/api'; // API 호출 로직
 import styles from './Login.module.css';
-import useUserStore from '../../store/userStore';
-import api from '../../api/api';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -10,7 +11,11 @@ export default function Login() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
-  const user = useUserStore((state) => state.user);
+  const dispatch = useDispatch();
+
+  // Redux 상태에서 사용자 정보 가져오기
+  const user = useSelector((state) => state.user.user);
+  console.log('user::', user);
 
   // 로그인 상태 확인
   useEffect(() => {
@@ -22,15 +27,17 @@ export default function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     if (!email || !password) {
       setError('모든 필드를 입력해주세요.');
       return;
     }
+
     try {
       const response = await api.post('/user/login', { email, password });
       if (response.status === 200) {
         const { user: userData, tokens } = response.data;
-        useUserStore.getState().setUser(userData, tokens.accessToken);
+        dispatch(setUser({ user: userData, token: tokens.accessToken })); // Redux 상태에 사용자 정보 저장
         navigate('/todos'); // 리디렉션
       } else {
         setError(response.data.message || '로그인 실패.');
