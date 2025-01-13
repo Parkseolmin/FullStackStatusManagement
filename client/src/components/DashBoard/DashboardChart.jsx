@@ -1,39 +1,28 @@
 import { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
-import api from '../../api/api';
 
-export default function DashboardChart() {
+export default function DashboardChart({ completionRate, categories }) {
+  // 초기값 설정
   const [chartData, setChartData] = useState({
-    series: [0, 0, 0], // 초기 값 설정
+    series: [0, 0, 0], // 초기 값: 애니메이션이 시작될 기본 상태
     labels: ['전체 할 일', '오늘 할 일', '작업'], // 초기 레이블 설정
   });
   const [chartKey, setChartKey] = useState(0); // 강제 리렌더링을 위한 키
 
+  // 부모 컴포넌트에서 받은 데이터를 업데이트
   useEffect(() => {
-    const fetchSummary = async () => {
-      try {
-        const response = await api.get('/dashboard/summary');
-        const { completionRate, categories } = response.data;
+    setChartData({
+      series: [
+        Math.round(completionRate || 0),
+        Math.round(categories?.today?.completionRate || 0),
+        Math.round(categories?.work?.completionRate || 0),
+      ],
+      labels: ['전체 할 일', '오늘 할 일', '작업'], // 레이블 유지
+    });
 
-        // 데이터 설정
-        setChartData({
-          series: [
-            Math.round(completionRate || 0),
-            Math.round(categories.today.completionRate || 0),
-            Math.round(categories.work.completionRate || 0),
-          ],
-          labels: ['전체 할 일', '오늘 할 일', '작업'],
-        });
-
-        // 강제로 차트 리렌더링
-        setChartKey((prevKey) => prevKey + 1);
-      } catch (error) {
-        console.error('Failed to fetch dashboard data:', error);
-      }
-    };
-
-    fetchSummary();
-  }, []);
+    // 차트의 애니메이션을 위해 강제 리렌더링
+    setChartKey((prevKey) => prevKey + 1);
+  }, [completionRate, categories]);
 
   const options = {
     chart: {
@@ -56,20 +45,16 @@ export default function DashboardChart() {
           background: 'transparent',
         },
         dataLabels: {
-          name: {
-            show: true,
-          },
+          name: { show: true },
           value: {
             show: true,
             fontSize: '16px',
-            formatter: function (val) {
-              return `${Math.round(val)}%`;
-            },
+            formatter: (val) => `${Math.round(val)}%`,
           },
           total: {
             show: true,
             label: '총 완료율',
-            formatter: function (w) {
+            formatter: (w) => {
               return `${Math.round(
                 w.globals.seriesTotals.reduce((a, b) => a + b, 0) /
                   w.globals.series.length,
@@ -80,12 +65,10 @@ export default function DashboardChart() {
       },
     },
     colors: ['#1ab7ea', '#0084ff', '#39539E'],
-    labels: chartData.labels,
+    labels: chartData.labels, // 초기 레이블과 업데이트된 레이블 사용
     tooltip: {
       enabled: true,
-      formatter: function (val, opts) {
-        return `${opts.series[opts.seriesIndex]}%`;
-      },
+      formatter: (val, opts) => `${opts.series[opts.seriesIndex]}%`,
     },
     legend: {
       show: true,
@@ -94,15 +77,10 @@ export default function DashboardChart() {
       position: 'left',
       offsetX: 70,
       offsetY: 10,
-      labels: {
-        useSeriesColors: true,
-      },
-      markers: {
-        size: 0,
-      },
-      formatter: function (seriesName, opts) {
-        return `${seriesName}: ${opts.w.globals.series[opts.seriesIndex]}%`;
-      },
+      labels: { useSeriesColors: true },
+      markers: { size: 0 },
+      formatter: (seriesName, opts) =>
+        `${seriesName}: ${opts.w.globals.series[opts.seriesIndex]}%`,
     },
   };
 
@@ -111,7 +89,7 @@ export default function DashboardChart() {
       <ReactApexChart
         key={chartKey} // 강제 리렌더링을 위한 키
         options={options}
-        series={chartData.series}
+        series={chartData.series} // 초기값 포함
         type='radialBar'
         height={400}
       />

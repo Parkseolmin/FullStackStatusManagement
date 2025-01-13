@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 
-export default function Todo({
+const Todo = memo(function Todo({
   todo,
   onUpdate,
   onDelete,
@@ -87,4 +87,6 @@ export default function Todo({
       )}
     </li>
   );
-}
+});
+
+export default Todo;

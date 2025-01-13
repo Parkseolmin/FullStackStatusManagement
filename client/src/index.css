@@ -1,3 +1,8 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
 /* 일반 상태 */
 li {
   margin: 10px 0;
