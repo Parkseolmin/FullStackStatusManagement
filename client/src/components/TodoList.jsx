@@ -2,15 +2,19 @@ import { useEffect, useState } from 'react';
 import Todo from './Todo';
 import api from '../api/api';
 import AddTodo from './AddTodo';
+import SearchInput from './SearchInput';
 
 export default function TodoList({ category, filter }) {
   const [todos, setTodos] = useState([]);
   const [editingId, setEditingId] = useState(null);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     const fetchTodos = async () => {
       try {
-        const response = await api.get(`/todos?category=${category}`);
+        const response = await api.get(
+          `/todos/search?category=${category}&search=${search}&filter=${filter}`,
+        );
         setTodos(response.data);
       } catch (err) {
         console.error('Failed to fetch todos:', err);
@@ -18,10 +22,10 @@ export default function TodoList({ category, filter }) {
     };
 
     fetchTodos();
-  }, [category]);
+  }, [category, search, filter]);
 
   const handleAdd = (newTodo) => {
-    setTodos((prev) => [...prev, newTodo]); // 새로운 투두 추가
+    setTodos((prev) => [...prev, newTodo]);
   };
 
   const handleUpdate = async (updated) => {
@@ -50,17 +54,11 @@ export default function TodoList({ category, filter }) {
     }
   };
 
-  const getFilteredTodos = (todos, filter) => {
-    if (filter === 'all') return todos;
-    return todos.filter((todo) => todo.status === filter);
-  };
-
-  const filteredTodos = getFilteredTodos(todos, filter);
-
   return (
     <section>
+      <SearchInput search={search} onSearchChange={setSearch} />
       <ul>
-        {filteredTodos.map((todo) => (
+        {todos.map((todo) => (
           <Todo
             key={todo.id}
             todo={todo}

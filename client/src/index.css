@@ -78,3 +78,17 @@ button:disabled {
     transform: translateY(0);
   }
 }
+
+.apexcharts-legend {
+  align-items: flex-end !important;
+}
+
+.apexcharts-legend-series {
+  padding-bottom: 10px;
+  margin-bottom: 10px 0 !important;
+}
+#chart {
+  width: 100%;
+  max-width: 500px; /* 최대 크기 제한 */
+  margin: auto;
+}

@@ -1,4 +1,21 @@
 const Todo = require('../models/Todo');
+const { getRegExp } = require('korean-regexp');
+
+// 할 일 검색
+const searchTodos = async (userId, category, search, filter) => {
+  const query = { author: userId, category };
+  if (search && search.trim() !== '') {
+    const regex = getRegExp(search, { initialSearch: true, fuzzy: true }); // 검색어를 기반으로 정규식 생성
+    query.text = { $regex: regex }; // 텍스트 필드에서 정규식 검색
+  }
+
+  // 필터 처리
+  if (filter && filter !== 'all') {
+    query.status = filter; // `active` 또는 `completed`
+  }
+
+  return await Todo.find(query).populate('author', 'name email'); // 작성자 정보 포함
+};
 
 // 모든 할 일 가져오기
 const getTodos = async (category) => {
@@ -70,6 +87,7 @@ const deleteTodo = async (id) => {
 };
 
 module.exports = {
+  searchTodos,
   getTodos,
   createTodo,
   updateTodo,

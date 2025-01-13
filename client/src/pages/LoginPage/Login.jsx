@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { setUser } from '../../store/userSlice'; // Redux 액션 가져오기
+import { setUser } from '../../store/user/userSlice'; // Redux 액션 가져오기
 import api from '../../api/api'; // API 호출 로직
 import styles from './Login.module.css';
 

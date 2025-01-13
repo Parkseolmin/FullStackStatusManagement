@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../api/api';
+import api from '../../api/api';
 
 // 사용자 복원 비동기 액션 (Zustand의 restoreUser 대체)
 export const restoreUser = createAsyncThunk(

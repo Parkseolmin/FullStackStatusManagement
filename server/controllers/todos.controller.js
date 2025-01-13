@@ -3,16 +3,24 @@ const asyncHandler = require('../utils/asyncHandler');
 
 const todoController = {};
 
+// 검색
+todoController.searchTodos = asyncHandler(async (req, res) => {
+  const { userId } = req.user; // 인증된 사용자
+  const { category, search, filter } = req.query; // 카테고리와 검색어
+  const todos = await todoService.searchTodos(userId, category, search, filter);
+  res.status(200).json(todos);
+});
+
 // 모든 할 일 가져오기
 todoController.getTodos = asyncHandler(async (req, res) => {
-  const { category } = req.query || 'today';
+  const { category } = req.query;
   const todos = await todoService.getTodos(category);
   res.status(200).json(todos);
 });
 
 // 새로운 할 일 생성
 todoController.createTodo = asyncHandler(async (req, res) => {
-  const { text, category = 'today' } = req.body;
+  const { text, category } = req.body;
   const { userId } = req.user; // 인증 미들웨어에서 전달된 userId
   const newTodo = await todoService.createTodo(text, category, userId);
   res.status(201).json(newTodo);

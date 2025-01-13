@@ -4,6 +4,7 @@ import App from '../App';
 import Login from '../pages/LoginPage/Login';
 import RegisterPage from './../pages/RegisterPage/RegisterPage';
 import TodoPage from './../pages/TodoPage';
+import DashBoard from '../pages/DashBoard';
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,14 @@ const router = createBrowserRouter([
         element: (
           <AuthProvider>
             <TodoPage />
+          </AuthProvider>
+        ),
+      },
+      {
+        path: '/dashboard',
+        element: (
+          <AuthProvider>
+            <DashBoard />
           </AuthProvider>
         ),
       },

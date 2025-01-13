@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { restoreUser } from './userSlice';
+import { restoreUser } from './user/userSlice';
 
 export default function AuthProvider({ children }) {
   const user = useSelector((state) => state.user.user);
